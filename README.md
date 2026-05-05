@@ -23,9 +23,10 @@ src/
 
 ## 👥 Time
 
-- Anderson
-- Marcos
-- Wesley
+- Anderson Pereira
+- Marcos Pereira
+- Wesley Pereira
+- Davi Conserva
 
 ## 🚀 Como Rodar
 
