@@ -1,5 +1,531 @@
+import entities.Cliente;
+import entities.Loja;
+import entities.Pedido;
+import entities.Produto;
+import entities.Promocao;
+import service.ClienteService;
+import service.LojaService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
 public class Main {
-    static void main(String[] args) {
-        System.out.println("Gays");
+
+    static Scanner sc = new Scanner(System.in);
+
+    // Na falta de um SQL vai uma lista mesmo
+    static List<Cliente> clientes = new ArrayList<>();
+    static List<Loja>    lojas    = new ArrayList<>();
+
+
+    public static void main(String[] args) {
+
+        Cliente clienteTeste = new Cliente("Ander", "83999990001", "testa", "123");
+        clientes.add(clienteTeste);
+
+        Loja lojaTeste = new Loja("BK", "83988880001", "teste", "123", "00.000.000/0001-00", "Patos Shoping");
+        Produto p1 = new Produto("X-Burguer",      "Hamburguer com queijo e salada");
+        Produto p2 = new Produto("Fritas Grandes", "Batata frita tamanho G");
+        Produto p3 = new Produto("Refrigerante",   "Lata 350ml");
+        lojaTeste.adiconarProduto(p1);
+        lojaTeste.adiconarProduto(p2);
+        lojaTeste.adiconarProduto(p3);
+        lojaTeste.adicionarPromocao(new Promocao(p1, "31/12/2025", 10, 25.90, 19.90));
+        lojaTeste.adicionarPromocao(new Promocao(p2, "31/12/2025", 20,  9.90,  7.90));
+        lojas.add(lojaTeste);
+
+        telaLogin();
+
+        System.out.println("Até logo!");
+        sc.close();
+    }
+
+    static void telaLogin() {
+        while (true) {
+            System.out.println("\n=== BEM-VINDO AO SALVÔ ===");
+            System.out.println("[1] Entrar como Cliente");
+            System.out.println("[2] Entrar como Loja");
+            System.out.println("[3] Cadastrar-se como Cliente");
+            System.out.println("[4] Cadastrar-se como Loja");
+            System.out.println("[0] Sair");
+            System.out.print("Escolha: ");
+            int opcao = lerInt();
+
+            switch (opcao) {
+                case 1 -> logarCliente();
+                case 2 -> logarLoja();
+                case 3 -> cadastrarCliente();
+                case 4 -> cadastrarLoja();
+                case 0 -> { return; }
+                default -> System.out.println("Opcao invalida.");
+            }
+        }
+    }
+
+    static void logarCliente() {
+        System.out.println("\n--- Login Cliente ---");
+        System.out.print("Email: ");
+        String email = sc.nextLine();
+        System.out.print("Senha: ");
+        String senha = sc.nextLine();
+
+        // Percorre a lista procurando um cliente com esse email e senha
+        Cliente clienteLogado = null;
+        for (Cliente c : clientes) {
+            if (c.login(email, senha)) {
+                clienteLogado = c;
+                break;
+            }
+        }
+
+        if (clienteLogado != null) {
+            System.out.println("Bem-vindo, " + clienteLogado.getNome() + "!");
+            telaMenuCliente(clienteLogado);
+        } else {
+            System.out.println("Email ou senha incorretos.");
+        }
+    }
+
+    static void logarLoja() {
+        System.out.println("\n--- Login Loja ---");
+        System.out.print("Email: ");
+        String email = sc.nextLine();
+        System.out.print("Senha: ");
+        String senha = sc.nextLine();
+
+        Loja lojaLogada = null;
+        for (Loja l : lojas) {
+            if (l.login(email, senha)) {
+                lojaLogada = l;
+                break;
+            }
+        }
+
+        if (lojaLogada != null) {
+            System.out.println("Bem-vinda, " + lojaLogada.getNome() + "!");
+            telaMenuLoja(lojaLogada);
+        } else {
+            System.out.println("Email ou senha incorretos.");
+        }
+    }
+
+    static void cadastrarCliente() {
+        System.out.println("\n--- Cadastro de Cliente ---");
+        System.out.print("Nome: ");
+        String nome = sc.nextLine();
+        System.out.print("Telefone: ");
+        String telefone = sc.nextLine();
+        System.out.print("Email: ");
+        String email = sc.nextLine();
+        System.out.print("Senha: ");
+        String senha = sc.nextLine();
+
+        for (Cliente c : clientes) {
+            if (c.getEmail().equals(email)) {
+                System.out.println("Esse email ja esta cadastrado.");
+                return;
+            }
+        }
+
+        clientes.add(new Cliente(nome, telefone, email, senha));
+        System.out.println("Cadastro realizado! Faca o login para continuar.");
+    }
+
+    static void cadastrarLoja() {
+        System.out.println("\n--- Cadastro de Loja ---");
+        System.out.print("Nome: ");
+        String nome = sc.nextLine();
+        System.out.print("Telefone: ");
+        String telefone = sc.nextLine();
+        System.out.print("Email: ");
+        String email = sc.nextLine();
+        System.out.print("Senha: ");
+        String senha = sc.nextLine();
+        System.out.print("Cnpj: ");
+        String cnpj = sc.nextLine();
+        System.out.print("Endereço: ");
+        String endereco = sc.nextLine();
+
+
+        for (Cliente c : clientes) {
+            if (c.getEmail().equals(email)) {
+                System.out.println("Esse email ja esta cadastrado.");
+                return;
+            }
+        }
+
+        lojas.add(new Loja(nome, telefone, email, senha, cnpj, endereco));
+        System.out.println("Cadastro realizado! Faca o login para continuar.");
+    }
+
+    // =============================================================
+    // TELA MENU CLIENTE
+    // =============================================================
+    static void telaMenuCliente(Cliente cliente) {
+
+        List<Pedido> carrinho = new ArrayList<>();
+
+        while (true) {
+            System.out.println("\n=== MENU CLIENTE — " + cliente.getNome() + " ===");
+            System.out.println("[1] Buscar lojas");
+            System.out.println("[2] Meu carrinho  (" + carrinho.size() + " item(ns))");
+            System.out.println("[3] Meus pedidos");
+            System.out.println("[0] Logout");
+            System.out.print("Escolha: ");
+            int opcao = lerInt();
+
+            switch (opcao) {
+                case 1 -> telaBuscarLojas(cliente, carrinho);
+                case 2 -> telaCarrinho(carrinho, cliente);
+                case 3 -> telaPedidosCliente(cliente);
+                case 0 -> { return; }
+                default -> System.out.println("Opcao invalida.");
+            }
+        }
+    }
+
+    // =============================================================
+    // TELA BUSCAR LOJAS
+    // =============================================================
+    static void telaBuscarLojas(Cliente cliente, List<Pedido> carrinho) {
+        while (true) {
+            System.out.println("\n=== LOJAS DISPONIVEIS ===");
+
+            if (lojas.isEmpty()) {
+                System.out.println("Nenhuma loja disponivel.");
+                return;
+            }
+
+            for (int i = 0; i < lojas.size(); i++) {
+                Loja l = lojas.get(i);
+                System.out.printf("[%d] %-20s  %s%n", i + 1, l.getNome(), l.getEndereco());
+            }
+            System.out.println("[0] Voltar");
+            System.out.print("Escolha uma loja: ");
+            int opcao = lerInt();
+
+            if (opcao == 0) return;
+
+            if (opcao < 1 || opcao > lojas.size()) {
+                System.out.println("Opcao invalida.");
+                continue;
+            }
+
+            // Abre o cardápio da loja escolhida
+            telaCardapio(cliente, lojas.get(opcao - 1), carrinho);
+        }
+    }
+
+    static void telaCardapio(Cliente cliente, Loja loja, List<Pedido> carrinho) {
+        while (true) {
+            System.out.println("\n=== " + loja.getNome().toUpperCase() + " ===");
+
+            List<Promocao> vitrine = loja.getVitrine();
+
+            if (vitrine.isEmpty()) {
+                System.out.println("Esta loja nao tem promocoes cadastradas.");
+                return;
+            }
+
+            System.out.printf("%-4s %-20s %10s %10s  %s%n", "Nro", "Produto", "Original", "Promocao", "Validade");
+            System.out.println("-".repeat(58));
+            for (int i = 0; i < vitrine.size(); i++) {
+                Promocao p = vitrine.get(i);
+                System.out.printf("[%d] %-20s R$%7.2f   R$%7.2f  %s%n",
+                        i + 1,
+                        p.getProduto().getNome(),
+                        p.getPrecoOriginal(),
+                        p.getValorPromocional(),
+                        p.getDataValidade()
+                );
+            }
+            System.out.println("[0] Voltar");
+            System.out.print("Escolha um item: ");
+            int opcao = lerInt();
+
+            if (opcao == 0) return;
+
+            if (opcao < 1 || opcao > vitrine.size()) {
+                System.out.println("Opcao invalida.");
+                continue;
+            }
+
+            Promocao escolhida = vitrine.get(opcao - 1);
+
+            System.out.print("Quantidade: ");
+            int quantidade = lerInt();
+
+            if (quantidade <= 0) {
+                System.out.println("Quantidade invalida.");
+                continue;
+            }
+
+            // Usa o ClienteService para criar o pedido
+            Pedido pedido = new Pedido(cliente);
+            double valorTotal = escolhida.getValorPromocional() * quantidade;
+            pedido.adicionarPromocao(escolhida, valorTotal);
+            carrinho.add(pedido);
+
+            System.out.println("Adicionado ao carrinho: " + quantidade + "x " + escolhida.getProduto().getNome());
+        }
+    }
+
+    // =============================================================
+    // TELA CARRINHO
+    // =============================================================
+    static void telaCarrinho(List<Pedido> carrinho, Cliente cliente) {
+        while (true) {
+            System.out.println("\n=== SEU CARRINHO ===");
+
+            if (carrinho.isEmpty()) {
+                System.out.println("Seu carrinho esta vazio.");
+                return;
+            }
+
+            double totalGeral = 0;
+            for (int i = 0; i < carrinho.size(); i++) {
+                Pedido pedido = carrinho.get(i);
+                String nomeProduto = pedido.getPromocoes().get(0).getProduto().getNome();
+                System.out.printf("[%d] %-20s  R$ %6.2f%n", i + 1, nomeProduto, pedido.getValorTotal());
+                totalGeral += pedido.getValorTotal();
+            }
+
+            System.out.println("-".repeat(36));
+            System.out.printf("TOTAL                      R$ %6.2f%n", totalGeral);
+            System.out.println("-".repeat(36));
+
+            System.out.println("\n[1] Finalizar compra");
+            System.out.println("[2] Remover um item");
+            System.out.println("[0] Voltar");
+            System.out.print("Escolha: ");
+            int opcao = lerInt();
+
+            switch (opcao) {
+                case 1 -> {
+                    telaCheckout(carrinho, totalGeral, cliente);
+                    return;
+                }
+                case 2 -> {
+                    System.out.print("Numero do item para remover: ");
+                    int num = lerInt();
+                    if (num >= 1 && num <= carrinho.size()) {
+                        carrinho.remove(num - 1);
+                        System.out.println("Item removido.");
+                    } else {
+                        System.out.println("Numero invalido.");
+                    }
+                }
+                case 0 -> { return; }
+                default -> System.out.println("Opcao invalida.");
+            }
+        }
+    }
+
+    // =============================================================
+    // TELA CHECKOUT
+    // =============================================================
+    static void telaCheckout(List<Pedido> carrinho, double total, Cliente cliente) {
+        System.out.println("\n=== FINALIZAR PEDIDO ===");
+        System.out.printf("Total: R$ %.2f%n", total);
+
+        System.out.print("Endereco de entrega: ");
+        String endereco = sc.nextLine();
+
+        System.out.println("Forma de pagamento:");
+        System.out.println("[1] Pix");
+        System.out.println("[2] Cartao");
+        System.out.println("[3] Dinheiro");
+        System.out.print("Escolha: ");
+        int pagamento = lerInt();
+
+        String formaPagamento = switch (pagamento) {
+            case 1 -> "Pix";
+            case 2 -> "Cartao";
+            case 3 -> "Dinheiro";
+            default -> "Dinheiro";
+        };
+
+        System.out.println("\n--- Confirmacao ---");
+        System.out.println("Endereco : " + endereco);
+        System.out.println("Pagamento: " + formaPagamento);
+        System.out.printf("Total    : R$ %.2f%n", total);
+        System.out.print("Confirmar? [S/N]: ");
+        String resposta = sc.nextLine();
+
+        if (resposta.equalsIgnoreCase("S")) {
+            for (Pedido p : carrinho) {
+                p.finalizar();
+                cliente.getPedidos().add(p);
+            }
+            carrinho.clear();
+            System.out.println("Pedido realizado com sucesso!");
+        } else {
+            System.out.println("Pedido cancelado. Carrinho mantido.");
+        }
+    }
+
+    // =============================================================
+    // TELA PEDIDOS DO CLIENTE
+    // =============================================================
+    static void telaPedidosCliente(Cliente cliente) {
+        System.out.println("\n=== MEUS PEDIDOS ===");
+
+        List<Pedido> pedidos = cliente.getPedidos();
+
+        if (pedidos.isEmpty()) {
+            System.out.println("Voce ainda nao fez nenhum pedido.");
+            return;
+        }
+
+        for (int i = 0; i < pedidos.size(); i++) {
+            Pedido p = pedidos.get(i);
+            System.out.printf("[%d] Pedido #%03d  |  R$ %.2f%n", i + 1, i + 1, p.getValorTotal());
+        }
+
+        System.out.print("Escolha um pedido para ver detalhes (0 para voltar): ");
+        int opcao = lerInt();
+
+        if (opcao == 0 || opcao < 1 || opcao > pedidos.size()) return;
+
+        Pedido pedido = pedidos.get(opcao - 1);
+        System.out.println("\n--- Detalhes Pedido #" + String.format("%03d", opcao) + " ---");
+        for (Promocao p : pedido.getPromocoes()) {
+            System.out.println("   " + p.getProduto().getNome());
+        }
+        System.out.printf("Total: R$ %.2f%n", pedido.getValorTotal());
+    }
+
+    // =============================================================
+    // TELA MENU LOJA
+    // =============================================================
+    static void telaMenuLoja(Loja loja) {
+        while (true) {
+            System.out.println("\n=== MENU LOJA — " + loja.getNome() + " ===");
+            System.out.println("[1] Gerenciar cardapio");
+            System.out.println("[2] Ver vitrine");
+            System.out.println("[0] Logout");
+            System.out.print("Escolha: ");
+            int opcao = lerInt();
+
+            switch (opcao) {
+                case 1 -> telaGerenciarCardapio(loja);
+                case 2 -> telaVerVitrine(loja);
+                case 0 -> { return; }
+                default -> System.out.println("Opcao invalida.");
+            }
+        }
+    }
+
+    static void telaVerVitrine(Loja loja) {
+        System.out.println("\n=== VITRINE — " + loja.getNome() + " ===");
+
+        if (loja.getVitrine().isEmpty()) {
+            System.out.println("Nenhuma promocao cadastrada.");
+            return;
+        }
+
+        for (Promocao p : loja.getVitrine()) {
+            System.out.printf("%-20s  R$%.2f -> R$%.2f  val: %s%n",
+                    p.getProduto().getNome(),
+                    p.getPrecoOriginal(),
+                    p.getValorPromocional(),
+                    p.getDataValidade()
+            );
+        }
+    }
+
+    // =============================================================
+    // TELA GERENCIAR CARDAPIO
+    // =============================================================
+    static void telaGerenciarCardapio(Loja loja) {
+        LojaService lojaService = new LojaService(loja);
+
+        while (true) {
+            System.out.println("\n=== CARDAPIO — " + loja.getNome() + " ===");
+
+            List<Produto> estoque = loja.getEstoque();
+
+            if (estoque.isEmpty()) {
+                System.out.println("Nenhum produto cadastrado.");
+            } else {
+                for (int i = 0; i < estoque.size(); i++) {
+                    System.out.printf("[%d] %-20s  %s%n", i + 1, estoque.get(i).getNome(), estoque.get(i).getDescricao());
+                }
+            }
+
+            System.out.println("\n[A] Adicionar produto");
+            System.out.println("[P] Adicionar promocao");
+            System.out.println("[0] Voltar");
+            System.out.print("Escolha: ");
+            String opcao = sc.nextLine().trim().toUpperCase();
+
+            switch (opcao) {
+                case "A" -> {
+                    System.out.println("\n--- Novo Produto ---");
+                    System.out.print("Nome: ");
+                    String nome = sc.nextLine();
+                    System.out.print("Descricao: ");
+                    String descricao = sc.nextLine();
+                    System.out.println(lojaService.CadastrarProduto(nome, descricao));
+                }
+                case "P" -> {
+                    if (estoque.isEmpty()) {
+                        System.out.println("Cadastre um produto primeiro.");
+                        continue;
+                    }
+                    System.out.println("\n--- Nova Promocao ---");
+                    System.out.println("Escolha o produto:");
+                    for (int i = 0; i < estoque.size(); i++) {
+                        System.out.printf("[%d] %s%n", i + 1, estoque.get(i).getNome());
+                    }
+                    System.out.print("Produto: ");
+                    int num = lerInt();
+                    if (num < 1 || num > estoque.size()) {
+                        System.out.println("Opcao invalida.");
+                        continue;
+                    }
+                    Produto produto = estoque.get(num - 1);
+                    System.out.print("Validade (dd/mm/aaaa): ");
+                    String validade = sc.nextLine();
+                    System.out.print("Preco original: R$ ");
+                    double precoOriginal = lerDouble();
+                    System.out.print("Preco promocional: R$ ");
+                    double precoPromocional = lerDouble();
+                    System.out.print("Quantidade disponivel: ");
+                    int quantidade = lerInt();
+                    System.out.println(lojaService.CadastrarPromoção(produto, validade, precoPromocional, precoOriginal, quantidade));
+                }
+                case "0" -> { return; }
+                default  -> System.out.println("Opcao invalida.");
+            }
+        }
+    }
+
+
+    // =============================================================
+    // os leitores pro codigo nn quebrar
+    // =============================================================
+
+    // Lê um inteiro. Se digitar letra, pede de novo.
+    static int lerInt() {
+        while (!sc.hasNextInt()) {
+            System.out.print("Digite um numero valido: ");
+            sc.next();
+        }
+        int valor = sc.nextInt();
+        sc.nextLine();
+        return valor;
+    }
+
+    // Lê um decimal. Se digitar errado, pede de novo.
+    static double lerDouble() {
+        while (!sc.hasNextDouble()) {
+            System.out.print("Digite um valor valido: ");
+            sc.next();
+        }
+        double valor = sc.nextDouble();
+        sc.nextLine();
+        return valor;
     }
 }
