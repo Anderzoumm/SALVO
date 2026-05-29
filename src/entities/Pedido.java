@@ -2,16 +2,22 @@ package entities;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.time.LocalDate;
 
 public class Pedido {
 
+
+    private String codigo;
+    private List<Item> itens;
+    private LocalDate data;
     private List<Promocao> promocoes;
     private double valorTotal;
     private Cliente cliente;
 
     public Pedido(Cliente cliente) {
         this.cliente = cliente;
+        this.itens = new ArrayList<>();
+        this.data = LocalDate.now();
         this.promocoes = new ArrayList<>();
         this.valorTotal = 0.0;
     }

@@ -5,8 +5,13 @@ import java.util.List;
 
 public class Cliente extends Usuario {
 
+    //atributos
+    private int id;
+    private String endereco;
     private List<Pedido> historico = new ArrayList<>() ;
 
+
+    //metodos
     public Cliente(String nome, String telefone, String email, String senha) {
         super(nome, telefone, email, senha);
     }

@@ -25,9 +25,9 @@ public class Main {
         clientes.add(clienteTeste);
 
         Loja lojaTeste = new Loja("BK", "83988880001", "teste", "123", "00.000.000/0001-00", "Patos Shoping");
-        Produto p1 = new Produto("X-Burguer",      "Hamburguer com queijo e salada");
-        Produto p2 = new Produto("Fritas Grandes", "Batata frita tamanho G");
-        Produto p3 = new Produto("Refrigerante",   "Lata 350ml");
+        Produto p1 = new Produto("123",      "Hamburguer com queijo e salada",null,null);
+        Produto p2 = new Produto("456", "Batata frita tamanho G",null, null);
+        Produto p3 = new Produto("789",   "Lata 350ml", null, null);
         lojaTeste.adiconarProduto(p1);
         lojaTeste.adiconarProduto(p2);
         lojaTeste.adiconarProduto(p3);
@@ -70,7 +70,6 @@ public class Main {
         System.out.print("Senha: ");
         String senha = sc.nextLine();
 
-        // Percorre a lista procurando um cliente com esse email e senha
         Cliente clienteLogado = null;
         for (Cliente c : clientes) {
             if (c.login(email, senha)) {
@@ -212,7 +211,6 @@ public class Main {
                 continue;
             }
 
-            // Abre o cardápio da loja escolhida
             telaCardapio(cliente, lojas.get(opcao - 1), carrinho);
         }
     }
@@ -507,7 +505,6 @@ public class Main {
     // os leitores pro codigo nn quebrar
     // =============================================================
 
-    // Lê um inteiro. Se digitar letra, pede de novo.
     static int lerInt() {
         while (!sc.hasNextInt()) {
             System.out.print("Digite um numero valido: ");
@@ -518,7 +515,6 @@ public class Main {
         return valor;
     }
 
-    // Lê um decimal. Se digitar errado, pede de novo.
     static double lerDouble() {
         while (!sc.hasNextDouble()) {
             System.out.print("Digite um valor valido: ");
