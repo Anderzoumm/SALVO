@@ -15,7 +15,8 @@ public class Promocao {
         this.precoOriginal = precoOriginal;
         this.valorPromocional = valorPromocional;
     }
-
+    public Promocao() {
+    }
     public Produto getProduto(){
         return produto;
     }

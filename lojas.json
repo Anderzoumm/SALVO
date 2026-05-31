@@ -1,0 +1,104 @@
+[
+  {
+    "endereço": "Patos Shopping",
+    "cnpj": "00.000.000/0001-00",
+    "estoque": [
+      {
+        "nome": "Coca-cola",
+        "descricao": "refigerante do tipo coca cola"
+      }
+    ],
+    "vitrine": [
+      {
+        "produto": {
+          "codigo": "123",
+          "nome": "Hamburguer com queijo e salada",
+          "descricao": "Hamburguer com queijo e salada"
+        },
+        "dataValidade": "31/12/2025",
+        "quantidade": 10,
+        "precoOriginal": 25.9,
+        "valorPromocional": 19.9
+      },
+      {
+        "produto": {
+          "codigo": "456",
+          "nome": "Batata frita tamanho G",
+          "descricao": "Batata frita tamanho G"
+        },
+        "dataValidade": "31/12/2025",
+        "quantidade": 20,
+        "precoOriginal": 9.9,
+        "valorPromocional": 7.9
+      },
+      {
+        "produto": {
+          "nome": "Coca-cola",
+          "descricao": "refigerante do tipo coca cola"
+        },
+        "dataValidade": "03/06/2026",
+        "quantidade": 30,
+        "precoOriginal": 9.0,
+        "valorPromocional": 3.0
+      }
+    ],
+    "nome": "BK",
+    "telefone": "83988880001",
+    "email": "teste",
+    "senha": "123"
+  },
+  {
+    "endereço": "Do lado do Bobs",
+    "cnpj": "17.340.248/0001-02",
+    "estoque": [
+      {
+        "codigo": "PROD1",
+        "nome": "Sorvete",
+        "descricao": "Sorvete sabor chocolateg"
+      },
+      {
+        "codigo": "PROD2",
+        "nome": "Sanduiche supremo",
+        "descricao": "Pão de manteiga, creme chees, cebola roxa, avocaro, duas carnes e maiones"
+      }
+    ],
+    "vitrine": [
+      {
+        "produto": {
+          "codigo": "PROD1",
+          "nome": "Sorvete",
+          "descricao": "Sorvete sabor chocolateg"
+        },
+        "dataValidade": "06/6/2026",
+        "quantidade": 10,
+        "precoOriginal": 18.0,
+        "valorPromocional": 8.0
+      },
+      {
+        "produto": {
+          "codigo": "PROD2",
+          "nome": "Sanduiche supremo",
+          "descricao": "Pão de manteiga, creme chees, cebola roxa, avocaro, duas carnes e maiones"
+        },
+        "dataValidade": "10/06/2026",
+        "quantidade": 5,
+        "precoOriginal": 20.0,
+        "valorPromocional": 10.0
+      }
+    ],
+    "nome": "Subway",
+    "telefone": "999999",
+    "email": "subwaypb@subway.com",
+    "senha": "12345"
+  },
+  {
+    "endereço": "alfinetes",
+    "cnpj": "10000",
+    "estoque": [],
+    "vitrine": [],
+    "nome": "starducks",
+    "telefone": "99999999",
+    "email": "ducks@star.com",
+    "senha": "12345"
+  }
+]

@@ -1,0 +1,49 @@
+[
+  {
+    "id": 1,
+    "endereco": "Inteiror do interior de Pombal",
+    "nome": "Ander",
+    "telefone": "83982173372",
+    "email": "andersonqueirogajob@gmail.com",
+    "senha": "2345678"
+  },
+  {
+    "id": 2,
+    "endereco": "Rua dos alfinetes",
+    "nome": "Marcuela",
+    "telefone": "83981492485",
+    "email": "marcos@teste.com",
+    "senha": "salvoadmin"
+  },
+  {
+    "id": 3,
+    "endereco": "Rua dos alfinetes",
+    "nome": "Davizera",
+    "telefone": "tel do davi",
+    "email": "marcos@teste.com",
+    "senha": "salvoadmin"
+  },
+  {
+    "id": 4,
+    "endereco": "Rua dos alfinetes",
+    "nome": "Wesleyzera",
+    "telefone": "tel do wesley",
+    "email": "marcos@teste.com",
+    "senha": "salvoadmin"
+  },
+  {
+    "id": 5,
+    "endereco": "Rua dos alfinetes",
+    "nome": "allyson",
+    "telefone": "8399999",
+    "email": "allyson@gmail.com",
+    "senha": "12345"
+  },
+  {
+    "id": 6,
+    "nome": "teste",
+    "telefone": "teste",
+    "email": "teste",
+    "senha": "teste"
+  }
+]

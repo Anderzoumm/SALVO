@@ -9,15 +9,16 @@ public class Pedido {
 
     private String codigo;
     private List<Item> itens;
-    private LocalDate data;
+    private String data;
     private List<Promocao> promocoes;
     private double valorTotal;
-    private Cliente cliente;
+    private String emailCliente;
 
+    public Pedido() {
+    }
     public Pedido(Cliente cliente) {
-        this.cliente = cliente;
+        this.emailCliente = cliente.getEmail();
         this.itens = new ArrayList<>();
-        this.data = LocalDate.now();
         this.promocoes = new ArrayList<>();
         this.valorTotal = 0.0;
     }
@@ -42,10 +43,9 @@ public class Pedido {
         return valorTotal;
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public String getEmailCliente() {
+        return emailCliente;
     }
-
     public List<Promocao> getPromocoes() {
         return promocoes;
     }

@@ -6,6 +6,9 @@ public abstract class Usuario {
     private String email;
     private String senha;
 
+    public Usuario() {
+    }
+
     public Usuario(String nome, String telefone, String email, String senha) {
         this.nome = nome;
         this.telefone = telefone;

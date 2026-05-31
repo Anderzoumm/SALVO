@@ -3,9 +3,12 @@ import entities.Loja;
 import entities.Pedido;
 import entities.Produto;
 import entities.Promocao;
-import service.ClienteService;
+import repository.ClienteRepository;
+import repository.LojaRepository;
+import repository.PedidoRepository;
 import service.LojaService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -14,32 +17,54 @@ public class Main {
 
     static Scanner sc = new Scanner(System.in);
 
-    // Na falta de um SQL vai uma lista mesmo
-    static List<Cliente> clientes = new ArrayList<>();
-    static List<Loja>    lojas    = new ArrayList<>();
+    // Na falta de um SQL vai uma lista .json mesmo
+    static ClienteRepository clienteRepository =
+            new ClienteRepository();
 
+    static LojaRepository lojaRepository =
+            new LojaRepository();
+
+    static PedidoRepository pedidoRepository =
+            new PedidoRepository();
 
     public static void main(String[] args) {
 
-        Cliente clienteTeste = new Cliente("Ander", "83999990001", "testa", "123");
-        clientes.add(clienteTeste);
+        try {
 
-        Loja lojaTeste = new Loja("BK", "83988880001", "teste", "123", "00.000.000/0001-00", "Patos Shoping");
-        Produto p1 = new Produto("123",      "Hamburguer com queijo e salada",null,null);
-        Produto p2 = new Produto("456", "Batata frita tamanho G",null, null);
-        Produto p3 = new Produto("789",   "Lata 350ml", null, null);
-        lojaTeste.adiconarProduto(p1);
-        lojaTeste.adiconarProduto(p2);
-        lojaTeste.adiconarProduto(p3);
-        lojaTeste.adicionarPromocao(new Promocao(p1, "31/12/2025", 10, 25.90, 19.90));
-        lojaTeste.adicionarPromocao(new Promocao(p2, "31/12/2025", 20,  9.90,  7.90));
-        lojas.add(lojaTeste);
+            clienteRepository.carregar();
+            lojaRepository.carregar();
+            pedidoRepository.carregar();
+
+            System.out.println("CLIENTES CARREGADOS:");
+
+            for (Cliente c : clienteRepository.listar()) {
+                System.out.println(
+                        c.getNome() + " | " +
+                                c.getEmail()
+                );
+            }
+
+            System.out.println("\nLOJAS CARREGADAS:");
+
+            for (Loja l : lojaRepository.listar()) {
+                System.out.println(
+                        l.getNome() + " | " +
+                                l.getEmail()
+                );
+            }
+
+        } catch (Exception e) {
+
+            System.out.println("Erro ao carregar dados");
+            e.printStackTrace();
+        }
 
         telaLogin();
-
         System.out.println("Até logo!");
         sc.close();
     }
+
+
 
     static void telaLogin() {
         while (true) {
@@ -71,7 +96,7 @@ public class Main {
         String senha = sc.nextLine();
 
         Cliente clienteLogado = null;
-        for (Cliente c : clientes) {
+        for (Cliente c : clienteRepository.listar()) {
             if (c.login(email, senha)) {
                 clienteLogado = c;
                 break;
@@ -94,7 +119,7 @@ public class Main {
         String senha = sc.nextLine();
 
         Loja lojaLogada = null;
-        for (Loja l : lojas) {
+        for (Loja l : lojaRepository.listar()) {
             if (l.login(email, senha)) {
                 lojaLogada = l;
                 break;
@@ -119,16 +144,26 @@ public class Main {
         String email = sc.nextLine();
         System.out.print("Senha: ");
         String senha = sc.nextLine();
+        System.out.print("Endereço: ");
+        String endereço = sc.nextLine();
 
-        for (Cliente c : clientes) {
+        for (Cliente c : clienteRepository.listar()) {
             if (c.getEmail().equals(email)) {
                 System.out.println("Esse email ja esta cadastrado.");
                 return;
             }
         }
 
-        clientes.add(new Cliente(nome, telefone, email, senha));
-        System.out.println("Cadastro realizado! Faca o login para continuar.");
+        try {
+            clienteRepository.inserir(
+                    new Cliente(nome, telefone, email, senha, endereço)
+            );
+
+            System.out.println("Cadastro realizado! Faca o login para continuar.");
+
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar cliente.");
+        }
     }
 
     static void cadastrarLoja() {
@@ -147,15 +182,23 @@ public class Main {
         String endereco = sc.nextLine();
 
 
-        for (Cliente c : clientes) {
+        for (Cliente c : clienteRepository.listar()) {
             if (c.getEmail().equals(email)) {
                 System.out.println("Esse email ja esta cadastrado.");
                 return;
             }
         }
 
-        lojas.add(new Loja(nome, telefone, email, senha, cnpj, endereco));
-        System.out.println("Cadastro realizado! Faca o login para continuar.");
+        try {
+            lojaRepository.inserir(
+                    new Loja(nome, telefone, email, senha, cnpj, endereco)
+            );
+
+            System.out.println("Cadastro realizado! Faca o login para continuar.");
+
+        } catch (Exception e) {
+            System.out.println("Erro ao salvar loja.");
+        }
     }
 
     // =============================================================
@@ -190,14 +233,13 @@ public class Main {
     static void telaBuscarLojas(Cliente cliente, List<Pedido> carrinho) {
         while (true) {
             System.out.println("\n=== LOJAS DISPONIVEIS ===");
-
-            if (lojas.isEmpty()) {
+            if (lojaRepository.listar().isEmpty()) {
                 System.out.println("Nenhuma loja disponivel.");
                 return;
             }
 
-            for (int i = 0; i < lojas.size(); i++) {
-                Loja l = lojas.get(i);
+            for (int i = 0; i < lojaRepository.listar().size(); i++) {
+                Loja l = lojaRepository.listar().get(i);
                 System.out.printf("[%d] %-20s  %s%n", i + 1, l.getNome(), l.getEndereco());
             }
             System.out.println("[0] Voltar");
@@ -206,12 +248,12 @@ public class Main {
 
             if (opcao == 0) return;
 
-            if (opcao < 1 || opcao > lojas.size()) {
+            if (opcao < 1 || opcao > lojaRepository.listar().size()) {
                 System.out.println("Opcao invalida.");
                 continue;
             }
 
-            telaCardapio(cliente, lojas.get(opcao - 1), carrinho);
+            telaCardapio(cliente, lojaRepository.listar().get(opcao - 1), carrinho);
         }
     }
 
@@ -259,7 +301,7 @@ public class Main {
                 continue;
             }
 
-            // Usa o ClienteService para criar o pedido
+            // cria o pedido e adiciona ao carrinho
             Pedido pedido = new Pedido(cliente);
             double valorTotal = escolhida.getValorPromocional() * quantidade;
             pedido.adicionarPromocao(escolhida, valorTotal);
@@ -353,8 +395,14 @@ public class Main {
 
         if (resposta.equalsIgnoreCase("S")) {
             for (Pedido p : carrinho) {
+
                 p.finalizar();
-                cliente.getPedidos().add(p);
+
+                try {
+                    pedidoRepository.inserir(p);
+                } catch (Exception e) {
+                    System.out.println("Erro ao salvar pedido.");
+                }
             }
             carrinho.clear();
             System.out.println("Pedido realizado com sucesso!");
@@ -369,7 +417,10 @@ public class Main {
     static void telaPedidosCliente(Cliente cliente) {
         System.out.println("\n=== MEUS PEDIDOS ===");
 
-        List<Pedido> pedidos = cliente.getPedidos();
+        List<Pedido> pedidos =
+                pedidoRepository.buscarPorCliente(
+                        cliente.getEmail()
+                );
 
         if (pedidos.isEmpty()) {
             System.out.println("Voce ainda nao fez nenhum pedido.");
@@ -466,6 +517,11 @@ public class Main {
                     System.out.print("Descricao: ");
                     String descricao = sc.nextLine();
                     System.out.println(lojaService.CadastrarProduto(nome, descricao));
+                    try {
+                        lojaRepository.salvar();
+                    } catch (Exception e) {
+                        System.out.println("Erro ao salvar loja.");
+                    }
                 }
                 case "P" -> {
                     if (estoque.isEmpty()) {
@@ -493,6 +549,11 @@ public class Main {
                     System.out.print("Quantidade disponivel: ");
                     int quantidade = lerInt();
                     System.out.println(lojaService.CadastrarPromoção(produto, validade, precoPromocional, precoOriginal, quantidade));
+                    try {
+                        lojaRepository.salvar();
+                    } catch (Exception e) {
+                        System.out.println("Erro ao salvar loja.");
+                    }
                 }
                 case "0" -> { return; }
                 default  -> System.out.println("Opcao invalida.");

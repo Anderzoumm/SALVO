@@ -7,9 +7,12 @@ public class Loja extends Usuario {
 
     private String endereço;
     private String cnpj;
-    private List<Produto> estoque = new ArrayList<>() ;
-    private List<Promocao> vitrine = new ArrayList<>() ;
 
+    private List<Produto> estoque = new ArrayList<>();
+    private List<Promocao> vitrine = new ArrayList<>();
+
+    public Loja() {
+    }
     public Loja(String nome, String telefone, String email, String senha, String cnpj, String endereço) {
         super(nome, telefone, email, senha);
         this.cnpj = cnpj;
