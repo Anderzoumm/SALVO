@@ -1,5 +1,6 @@
 package service;
 
+import Exceptions.ValorInvalidoException;
 import entities.Loja;
 import entities.Produto;
 import entities.Promocao;
@@ -22,7 +23,7 @@ public class LojaService {
 
     public String CadastrarPromoção(Produto produto,String validade,Double valornovo,Double valorvelho,int quantidade){
         if(valornovo >= valorvelho){
-            return "Valor Novo é IGUAL ou Maior que o Valor Original";
+            throw new ValorInvalidoException("O VALOR NOVO NAO PODER SER MAIOR OU IGUAL A VALOR VELHO");
         }
         Promocao promoção = new Promocao(produto,validade,quantidade,valorvelho,valornovo);
         loja.adicionarPromocao(promoção);

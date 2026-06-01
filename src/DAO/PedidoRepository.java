@@ -1,5 +1,6 @@
-package repository;
+package DAO;
 
+import Exceptions.GenericException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -95,10 +96,10 @@ public class PedidoRepository {
 
         } catch (Exception e) {
 
-            System.out.println("ERRO AO CARREGAR PEDIDOS:");
-            e.printStackTrace();
+
 
             pedidos = new ArrayList<>();
+            throw new GenericException("ERRO AO CARREGAR CLIENTES: " + e.getMessage());
         }
     }
 }

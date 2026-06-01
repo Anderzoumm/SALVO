@@ -1,5 +1,6 @@
-package repository;
+package DAO;
 
+import Exceptions.GenericException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import entities.Cliente;
@@ -99,11 +100,11 @@ public class ClienteRepository {
             }
 
         } catch (Exception e) {
-
-            System.out.println("ERRO AO CARREGAR CLIENTES:");
-            e.printStackTrace();
-
             clientes = new ArrayList<>();
+
+            throw new GenericException("ERRO AO CARREGAR CLIENTES: " + e.getMessage());
+
+
         }
     }
 }

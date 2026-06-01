@@ -1,5 +1,6 @@
-package repository;
+package DAO;
 
+import Exceptions.GenericException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -65,6 +66,7 @@ public class LojaRepository {
         } catch (Exception e) {
 
             lojas = new ArrayList<>();
+            throw new GenericException("ERRO AO CARREGAR CLIENTES: " + e.getMessage());
         }
     }
 }

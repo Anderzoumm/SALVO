@@ -3,9 +3,9 @@ import entities.Loja;
 import entities.Pedido;
 import entities.Produto;
 import entities.Promocao;
-import repository.ClienteRepository;
-import repository.LojaRepository;
-import repository.PedidoRepository;
+import DAO.ClienteRepository;
+import DAO.LojaRepository;
+import DAO.PedidoRepository;
 import service.LojaService;
 
 import java.io.IOException;
@@ -53,16 +53,24 @@ public class Main {
                 );
             }
 
+
+
         } catch (Exception e) {
 
-            System.out.println("Erro ao carregar dados");
             e.printStackTrace();
         }
 
+
         telaLogin();
+
+        //aqui o progama volta e se fecha
         System.out.println("Até logo!");
         sc.close();
     }
+
+
+
+
 
 
 
