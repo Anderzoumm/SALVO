@@ -27,6 +27,19 @@ public class PedidoRepository {
         salvar();
     }
 
+    public boolean deletar(int index) throws IOException {
+
+        if (index < 0 || index >= pedidos.size()) {
+            return false;
+        }
+
+        pedidos.remove(index);
+
+        salvar();
+
+        return true;
+    }
+
     public List<Pedido> listar() {
         return pedidos;
     }
@@ -47,7 +60,7 @@ public class PedidoRepository {
 
     public void salvar() throws IOException {
 
-               Gson gson = new GsonBuilder()
+        Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .create();
 
@@ -67,16 +80,9 @@ public class PedidoRepository {
                     new FileInputStream(FILE_NAME)
             );
 
-            System.out.println("=================================");
-            System.out.println("PEDIDOS JSON LIDO:");
-            System.out.println(json);
-            System.out.println("=================================");
-
             if (json == null || json.trim().isEmpty()) {
 
                 pedidos = new ArrayList<>();
-
-                System.out.println("Arquivo de pedidos vazio.");
 
                 return;
             }
@@ -89,17 +95,10 @@ public class PedidoRepository {
                 pedidos = new ArrayList<>();
             }
 
-            System.out.println(
-                    "PEDIDOS CARREGADOS: " +
-                            pedidos.size()
-            );
-
         } catch (Exception e) {
 
-
-
             pedidos = new ArrayList<>();
-            throw new GenericException("ERRO AO CARREGAR CLIENTES: " + e.getMessage());
+            throw new GenericException("ERRO AO CARREGAR PEDIDOS: " + e.getMessage());
         }
     }
 }

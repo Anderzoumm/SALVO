@@ -42,8 +42,8 @@
   {
     "id": 6,
     "nome": "teste",
-    "telefone": "teste",
+    "telefone": "123456",
     "email": "teste",
-    "senha": "teste"
+    "senha": "123"
   }
 ]

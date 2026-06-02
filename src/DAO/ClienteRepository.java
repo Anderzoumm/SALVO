@@ -31,6 +31,24 @@ public class ClienteRepository {
             salvar();
         }
     }
+
+    public boolean deletar(int id) throws IOException {
+
+        for (int i = 0; i < clientes.size(); i++) {
+
+            if (clientes.get(i).getId() == id) {
+
+                clientes.remove(i);
+
+                salvar();
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public List<Cliente> listar() {
         return clientes;
     }
@@ -46,8 +64,6 @@ public class ClienteRepository {
 
         return null;
     }
-
-
 
     public void salvar() throws IOException {
 
@@ -71,14 +87,8 @@ public class ClienteRepository {
                     new FileInputStream(FILE_NAME)
             );
 
-            System.out.println("=================================");
-            System.out.println("JSON LIDO:");
-            System.out.println(json);
-            System.out.println("=================================");
-
             if (json == null || json.trim().isEmpty()) {
                 clientes = new ArrayList<>();
-                System.out.println("Arquivo vazio.");
                 return;
             }
 
@@ -90,21 +100,9 @@ public class ClienteRepository {
                 clientes = new ArrayList<>();
             }
 
-            System.out.println("CLIENTES CARREGADOS: " + clientes.size());
-
-            for (Cliente c : clientes) {
-                System.out.println(
-                        c.getNome() + " | " +
-                                c.getEmail()
-                );
-            }
-
         } catch (Exception e) {
             clientes = new ArrayList<>();
-
             throw new GenericException("ERRO AO CARREGAR CLIENTES: " + e.getMessage());
-
-
         }
     }
 }

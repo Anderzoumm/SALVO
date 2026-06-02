@@ -90,15 +90,5 @@
     "telefone": "999999",
     "email": "subwaypb@subway.com",
     "senha": "12345"
-  },
-  {
-    "endereço": "alfinetes",
-    "cnpj": "10000",
-    "estoque": [],
-    "vitrine": [],
-    "nome": "starducks",
-    "telefone": "99999999",
-    "email": "ducks@star.com",
-    "senha": "12345"
   }
 ]
