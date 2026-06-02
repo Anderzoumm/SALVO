@@ -35,26 +35,6 @@ public class Main {
             lojaRepository.carregar();
             pedidoRepository.carregar();
 
-            System.out.println("CLIENTES CARREGADOS:");
-
-            for (Cliente c : clienteRepository.listar()) {
-                System.out.println(
-                        c.getNome() + " | " +
-                                c.getEmail()
-                );
-            }
-
-            System.out.println("\nLOJAS CARREGADAS:");
-
-            for (Loja l : lojaRepository.listar()) {
-                System.out.println(
-                        l.getNome() + " | " +
-                                l.getEmail()
-                );
-            }
-
-
-
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -68,12 +48,9 @@ public class Main {
         sc.close();
     }
 
-
-
-
-
-
-
+    // =============================================================
+    // TELA LOGIN
+    // =============================================================
     static void telaLogin() {
         while (true) {
             System.out.println("\n=== BEM-VINDO AO SALVÔ ===");
@@ -81,6 +58,7 @@ public class Main {
             System.out.println("[2] Entrar como Loja");
             System.out.println("[3] Cadastrar-se como Cliente");
             System.out.println("[4] Cadastrar-se como Loja");
+            System.out.println("[5] Gerenciar dados");
             System.out.println("[0] Sair");
             System.out.print("Escolha: ");
             int opcao = lerInt();
@@ -90,7 +68,161 @@ public class Main {
                 case 2 -> logarLoja();
                 case 3 -> cadastrarCliente();
                 case 4 -> cadastrarLoja();
+                case 5 -> telaGerenciarDados();
                 case 0 -> { return; }
+                default -> System.out.println("Opcao invalida.");
+            }
+        }
+    }
+
+    // =============================================================
+    // TELA GERENCIAR DADOS
+    // =============================================================
+    static void telaGerenciarDados() {
+        while (true) {
+            System.out.println("\n=== GERENCIAR DADOS ===");
+            System.out.println("[1] Clientes");
+            System.out.println("[2] Lojas");
+            System.out.println("[3] Pedidos");
+            System.out.println("[0] Voltar");
+            System.out.print("Escolha: ");
+            int opcao = lerInt();
+
+            switch (opcao) {
+                case 1 -> telaGerenciarClientes();
+                case 2 -> telaGerenciarLojas();
+                case 3 -> telaGerenciarPedidos();
+                case 0 -> { return; }
+                default -> System.out.println("Opcao invalida.");
+            }
+        }
+    }
+
+    static void telaGerenciarClientes() {
+        while (true) {
+            System.out.println("\n=== CLIENTES ===");
+
+            List<Cliente> clientes = clienteRepository.listar();
+
+            if (clientes.isEmpty()) {
+                System.out.println("Nenhum cliente cadastrado.");
+                return;
+            }
+
+            for (int i = 0; i < clientes.size(); i++) {
+                Cliente c = clientes.get(i);
+                System.out.printf("[%d] ID:%-3d  %-20s  %s%n",
+                        i + 1, c.getId(), c.getNome(), c.getEmail());
+            }
+
+            System.out.println("\n[D] Deletar cliente");
+            System.out.println("[0] Voltar");
+            System.out.print("Escolha: ");
+            String opcao = sc.nextLine().trim().toUpperCase();
+
+            switch (opcao) {
+                case "D" -> {
+                    System.out.print("ID do cliente a deletar: ");
+                    int id = lerInt();
+                    try {
+                        boolean removido = clienteRepository.deletar(id);
+                        if (removido) {
+                            System.out.println("Cliente removido com sucesso.");
+                        } else {
+                            System.out.println("Cliente com ID " + id + " nao encontrado.");
+                        }
+                    } catch (IOException e) {
+                        System.out.println("Erro ao salvar apos deletar.");
+                    }
+                }
+                case "0" -> { return; }
+                default -> System.out.println("Opcao invalida.");
+            }
+        }
+    }
+
+    static void telaGerenciarLojas() {
+        while (true) {
+            System.out.println("\n=== LOJAS ===");
+
+            List<Loja> lojas = lojaRepository.listar();
+
+            if (lojas.isEmpty()) {
+                System.out.println("Nenhuma loja cadastrada.");
+                return;
+            }
+
+            for (int i = 0; i < lojas.size(); i++) {
+                Loja l = lojas.get(i);
+                System.out.printf("[%d] %-20s  CNPJ: %-20s  %s%n",
+                        i + 1, l.getNome(), l.getCnpj(), l.getEmail());
+            }
+
+            System.out.println("\n[D] Deletar loja");
+            System.out.println("[0] Voltar");
+            System.out.print("Escolha: ");
+            String opcao = sc.nextLine().trim().toUpperCase();
+
+            switch (opcao) {
+                case "D" -> {
+                    System.out.print("Numero da loja a deletar: ");
+                    int num = lerInt();
+                    if (num < 1 || num > lojas.size()) {
+                        System.out.println("Numero invalido.");
+                    } else {
+                        lojas.remove(num - 1);
+                        try {
+                            lojaRepository.salvar();
+                            System.out.println("Loja removida com sucesso.");
+                        } catch (Exception e) {
+                            System.out.println("Erro ao salvar apos deletar.");
+                        }
+                    }
+                }
+                case "0" -> { return; }
+                default -> System.out.println("Opcao invalida.");
+            }
+        }
+    }
+
+    static void telaGerenciarPedidos() {
+        while (true) {
+            System.out.println("\n=== PEDIDOS ===");
+
+            List<Pedido> pedidos = pedidoRepository.listar();
+
+            if (pedidos.isEmpty()) {
+                System.out.println("Nenhum pedido cadastrado.");
+                return;
+            }
+
+            for (int i = 0; i < pedidos.size(); i++) {
+                Pedido p = pedidos.get(i);
+                System.out.printf("[%d] Cliente: %-30s  R$ %.2f%n",
+                        i + 1, p.getEmailCliente(), p.getValorTotal());
+            }
+
+            System.out.println("\n[D] Deletar pedido");
+            System.out.println("[0] Voltar");
+            System.out.print("Escolha: ");
+            String opcao = sc.nextLine().trim().toUpperCase();
+
+            switch (opcao) {
+                case "D" -> {
+                    System.out.print("Numero do pedido a deletar: ");
+                    int num = lerInt();
+                    if (num < 1 || num > pedidos.size()) {
+                        System.out.println("Numero invalido.");
+                    } else {
+                        try {
+                            pedidoRepository.deletar(num - 1);
+                            System.out.println("Pedido removido com sucesso.");
+                        } catch (IOException e) {
+                            System.out.println("Erro ao salvar apos deletar.");
+                        }
+                    }
+                }
+                case "0" -> { return; }
                 default -> System.out.println("Opcao invalida.");
             }
         }
