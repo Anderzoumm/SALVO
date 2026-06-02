@@ -276,16 +276,32 @@ public class Main {
 
     static void cadastrarCliente() {
         System.out.println("\n--- Cadastro de Cliente ---");
-        System.out.print("Nome: ");
-        String nome = sc.nextLine();
-        System.out.print("Telefone: ");
-        String telefone = sc.nextLine();
-        System.out.print("Email: ");
-        String email = sc.nextLine();
-        System.out.print("Senha: ");
-        String senha = sc.nextLine();
-        System.out.print("Endereço: ");
-        String endereço = sc.nextLine();
+
+        String nome;
+        do {
+            System.out.print("Nome: ");
+            nome = sc.nextLine().trim();
+            if (nome.isEmpty()) System.out.println("Nome nao pode ser vazio.");
+        } while (nome.isEmpty());
+
+        String telefone;
+        do {
+            System.out.print("Telefone: ");
+            telefone = sc.nextLine().trim();
+            if (telefone.isEmpty()) {
+                System.out.println("Telefone nao pode ser vazio.");
+            } else if (!telefone.matches("[0-9+(). -]+")) {
+                System.out.println("Telefone invalido. Use apenas numeros.");
+                telefone = "";
+            }
+        } while (telefone.isEmpty());
+
+        String email;
+        do {
+            System.out.print("Email: ");
+            email = sc.nextLine().trim();
+            if (email.isEmpty()) System.out.println("Email nao pode ser vazio.");
+        } while (email.isEmpty());
 
         for (Cliente c : clienteRepository.listar()) {
             if (c.getEmail().equals(email)) {
@@ -294,13 +310,23 @@ public class Main {
             }
         }
 
+        String senha;
+        do {
+            System.out.print("Senha: ");
+            senha = sc.nextLine().trim();
+            if (senha.isEmpty()) System.out.println("Senha nao pode ser vazia.");
+        } while (senha.isEmpty());
+
+        String endereco;
+        do {
+            System.out.print("Endereço: ");
+            endereco = sc.nextLine().trim();
+            if (endereco.isEmpty()) System.out.println("Endereco nao pode ser vazio.");
+        } while (endereco.isEmpty());
+
         try {
-            clienteRepository.inserir(
-                    new Cliente(nome, telefone, email, senha, endereço)
-            );
-
+            clienteRepository.inserir(new Cliente(nome, telefone, email, senha, endereco));
             System.out.println("Cadastro realizado! Faca o login para continuar.");
-
         } catch (IOException e) {
             System.out.println("Erro ao salvar cliente.");
         }
@@ -308,34 +334,64 @@ public class Main {
 
     static void cadastrarLoja() {
         System.out.println("\n--- Cadastro de Loja ---");
-        System.out.print("Nome: ");
-        String nome = sc.nextLine();
-        System.out.print("Telefone: ");
-        String telefone = sc.nextLine();
-        System.out.print("Email: ");
-        String email = sc.nextLine();
-        System.out.print("Senha: ");
-        String senha = sc.nextLine();
-        System.out.print("Cnpj: ");
-        String cnpj = sc.nextLine();
-        System.out.print("Endereço: ");
-        String endereco = sc.nextLine();
 
+        String nome;
+        do {
+            System.out.print("Nome: ");
+            nome = sc.nextLine().trim();
+            if (nome.isEmpty()) System.out.println("Nome nao pode ser vazio.");
+        } while (nome.isEmpty());
 
-        for (Cliente c : clienteRepository.listar()) {
-            if (c.getEmail().equals(email)) {
+        String telefone;
+        do {
+            System.out.print("Telefone: ");
+            telefone = sc.nextLine().trim();
+            if (telefone.isEmpty()) {
+                System.out.println("Telefone nao pode ser vazio.");
+            } else if (!telefone.matches("[0-9+(). -]+")) {
+                System.out.println("Telefone invalido. Use apenas numeros.");
+                telefone = "";
+            }
+        } while (telefone.isEmpty());
+
+        String email;
+        do {
+            System.out.print("Email: ");
+            email = sc.nextLine().trim();
+            if (email.isEmpty()) System.out.println("Email nao pode ser vazio.");
+        } while (email.isEmpty());
+
+        for (Loja l : lojaRepository.listar()) {
+            if (l.getEmail().equals(email)) {
                 System.out.println("Esse email ja esta cadastrado.");
                 return;
             }
         }
 
+        String senha;
+        do {
+            System.out.print("Senha: ");
+            senha = sc.nextLine().trim();
+            if (senha.isEmpty()) System.out.println("Senha nao pode ser vazia.");
+        } while (senha.isEmpty());
+
+        String cnpj;
+        do {
+            System.out.print("CNPJ: ");
+            cnpj = sc.nextLine().trim();
+            if (cnpj.isEmpty()) System.out.println("CNPJ nao pode ser vazio.");
+        } while (cnpj.isEmpty());
+
+        String endereco;
+        do {
+            System.out.print("Endereço: ");
+            endereco = sc.nextLine().trim();
+            if (endereco.isEmpty()) System.out.println("Endereco nao pode ser vazio.");
+        } while (endereco.isEmpty());
+
         try {
-            lojaRepository.inserir(
-                    new Loja(nome, telefone, email, senha, cnpj, endereco)
-            );
-
+            lojaRepository.inserir(new Loja(nome, telefone, email, senha, cnpj, endereco));
             System.out.println("Cadastro realizado! Faca o login para continuar.");
-
         } catch (Exception e) {
             System.out.println("Erro ao salvar loja.");
         }
